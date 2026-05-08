@@ -7,10 +7,12 @@ dev\feliperodrigue\botagendamento\repository\UserConnectionRepository.class
 dev\feliperodrigue\botagendamento\telegram\BotResponse.class
 dev\feliperodrigue\botagendamento\telegram\handler\ProximosHandler.class
 dev\feliperodrigue\botagendamento\domain\UserConnection.class
+dev\feliperodrigue\botagendamento\checker\FakeAppointmentChecker.class
 dev\feliperodrigue\botagendamento\repository\SentReminderRepository.class
-dev\feliperodrigue\botagendamento\selenium\AppointmentChecker.class
 dev\feliperodrigue\botagendamento\telegram\CommandRouter.class
 dev\feliperodrigue\botagendamento\notification\AppointmentBot.class
+dev\feliperodrigue\botagendamento\scheduling\AgendamentoService$Resultado.class
+dev\feliperodrigue\botagendamento\scheduling\AgendamentoService.class
 dev\feliperodrigue\botagendamento\domain\AppointmentResult.class
 dev\feliperodrigue\botagendamento\domain\SentReminder.class
 dev\feliperodrigue\botagendamento\telegram\handler\AmanhaHandler.class
@@ -25,8 +27,10 @@ dev\feliperodrigue\botagendamento\config\TelegramProperties.class
 dev\feliperodrigue\botagendamento\telegram\handler\NovoHandler.class
 dev\feliperodrigue\botagendamento\conversation\ConversationState$Step.class
 dev\feliperodrigue\botagendamento\conversation\ConversationStateService.class
+dev\feliperodrigue\botagendamento\scheduling\ReminderJob.class
 dev\feliperodrigue\botagendamento\config\TelegramBotConfig.class
 dev\feliperodrigue\botagendamento\telegram\handler\HojeHandler.class
+dev\feliperodrigue\botagendamento\checker\AppointmentChecker.class
 dev\feliperodrigue\botagendamento\config\GoogleProperties.class
 dev\feliperodrigue\botagendamento\telegram\handler\VincularHandler.class
-dev\feliperodrigue\botagendamento\selenium\FakeAppointmentChecker.class
+dev\feliperodrigue\botagendamento\google\GoogleCalendarService.class

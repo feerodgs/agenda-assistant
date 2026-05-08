@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
+@Component
 public class AppointmentCheckJob {
 
     private static final Logger log = LoggerFactory.getLogger(AppointmentCheckJob.class);
