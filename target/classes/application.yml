@@ -1,0 +1,71 @@
+spring:
+  application:
+    name: bot-agendamento
+  profiles:
+    # O perfil 'local' carrega application-local.yml (ignorado pelo git).
+    # Em Docker/produção, remova ou substitua por 'prod' via variável de ambiente:
+    # SPRING_PROFILES_ACTIVE=prod
+    active: local
+
+  # ─── JPA / H2 ──────────────────────────────────────────────
+  datasource:
+    url: jdbc:h2:mem:botdb;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop   # recria o schema a cada restart (ok para H2)
+    show-sql: false
+  h2:
+    console:
+      enabled: false           # habilitado apenas no perfil local (ver application-local.yml)
+
+# ─── Scheduler ────────────────────────────────────────────────
+bot:
+  scheduler:
+    # Intervalo entre execuções (em ms). Padrão: 5 minutos.
+    # Sobrescreva via variável de ambiente: BOT_SCHEDULER_INTERVAL-MS=60000
+    interval-ms: 300000
+    # Delay inicial após subir a aplicação (ms). Padrão: 10 segundos.
+    initial-delay-ms: 10000
+
+  # Controla qual implementação do AppointmentChecker usar.
+  # 'fake' → FakeAppointmentChecker (sem browser, para desenvolvimento)
+  # Adicione novos valores conforme implementar checkers reais.
+  checker:
+    mode: fake
+
+# ─── Telegram ─────────────────────────────────────────────────
+# Substitua pelos valores reais (ou use variáveis de ambiente no Docker).
+telegram:
+  bot:
+    token: ${TELEGRAM_BOT_TOKEN:SEU_TOKEN_AQUI}
+    username: ${TELEGRAM_BOT_USERNAME:SEU_USERNAME_AQUI}
+  chat-id: ${TELEGRAM_CHAT_ID:SEU_CHAT_ID_AQUI}
+
+# ─── Lembretes ────────────────────────────────────────────────
+# Intervalo entre execuções do ReminderJob.
+# Padrão: a cada 5 minutos (300000 ms).
+# Delay inicial: 60 segundos após o boot para aguardar o contexto estabilizar.
+reminder:
+  interval-ms: 300000
+  initial-delay-ms: 60000
+
+# ─── Google OAuth 2.0 ─────────────────────────────────────────
+# Obtenha client-id e client-secret no Google Cloud Console:
+#   APIs & Services → Credentials → OAuth 2.0 Client IDs
+# O redirect-uri deve ser cadastrado exatamente como aparece aqui.
+google:
+  oauth:
+    client-id: ${GOOGLE_CLIENT_ID:seu-client-id}
+    client-secret: ${GOOGLE_CLIENT_SECRET:seu-client-secret}
+    redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/oauth/google/callback}
+
+# ─── Logging ──────────────────────────────────────────────────
+logging:
+  level:
+    dev.feliperodrigue.botagendamento: DEBUG
+    org.springframework.scheduling: INFO
+  pattern:
+    console: "%d{HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

@@ -1,0 +1,33 @@
+version: "3.9"
+
+services:
+
+  # ─── Aplicação Spring Boot ──────────────────────────────────
+  app:
+    build: .
+    container_name: bot-agendamento
+    restart: unless-stopped
+    environment:
+      # ── Scheduler ──────────────────────────────────────────
+      BOT_SCHEDULER_INTERVAL-MS: "300000"       # 5 minutos
+      BOT_SCHEDULER_INITIAL-DELAY-MS: "10000"   # 10 segundos
+
+      # ── Checker: 'fake' (padrão) ───────────────────────────
+      BOT_CHECKER_MODE: "fake"
+
+      # ── Telegram — substitua pelos valores reais ────────────
+      TELEGRAM_BOT_TOKEN: "SEU_TOKEN_AQUI"
+      TELEGRAM_BOT_USERNAME: "SEU_BOT_USERNAME"
+      TELEGRAM_CHAT_ID: "SEU_CHAT_ID"
+
+      # ── Site alvo ───────────────────────────────────────────
+      TARGET_URL: "https://exemplo.gov.br/agendamento"
+      TARGET_USERNAME: "seu_usuario"
+      TARGET_PASSWORD: "sua_senha"
+
+    networks:
+      - bot-net
+
+networks:
+  bot-net:
+    driver: bridge
