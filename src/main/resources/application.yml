@@ -21,21 +21,6 @@ spring:
     console:
       enabled: false           # habilitado apenas no perfil local (ver application-local.yml)
 
-# ─── Scheduler ────────────────────────────────────────────────
-bot:
-  scheduler:
-    # Intervalo entre execuções (em ms). Padrão: 5 minutos.
-    # Sobrescreva via variável de ambiente: BOT_SCHEDULER_INTERVAL-MS=60000
-    interval-ms: 300000
-    # Delay inicial após subir a aplicação (ms). Padrão: 10 segundos.
-    initial-delay-ms: 10000
-
-  # Controla qual implementação do AppointmentChecker usar.
-  # 'fake' → FakeAppointmentChecker (sem browser, para desenvolvimento)
-  # Adicione novos valores conforme implementar checkers reais.
-  checker:
-    mode: fake
-
 # ─── Telegram ─────────────────────────────────────────────────
 # Substitua pelos valores reais (ou use variáveis de ambiente no Docker).
 telegram:
