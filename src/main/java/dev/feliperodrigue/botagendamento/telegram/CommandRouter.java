@@ -16,6 +16,7 @@ public class CommandRouter {
     private static final Logger log = LoggerFactory.getLogger(CommandRouter.class);
 
     private final Map<String, CommandHandler> handlers;
+    private final StartHandler startHandler;
     private final NovoHandler novoHandler;
     private final ConversationStateService conversationStateService;
 
@@ -28,6 +29,7 @@ public class CommandRouter {
             ProximosHandler proximosHandler,
             ConversationStateService conversationStateService) {
 
+        this.startHandler = startHandler;
         this.novoHandler = novoHandler;
         this.conversationStateService = conversationStateService;
         this.handlers = Map.of(
@@ -55,20 +57,28 @@ public class CommandRouter {
             }
 
             return BotResponse.text(
-                    "Comando nao reconhecido. Comandos disponiveis:\n" +
+                    "Comando não reconhecido. Comandos disponíveis:\n" +
                     "/vincular — conectar Google Calendar\n" +
                     "/novo     — criar compromisso\n" +
                     "/hoje     — agenda de hoje\n" +
-                    "/amanha   — agenda de amanha\n" +
-                    "/proximos — proximos compromissos"
+                    "/amanha   — agenda de amanhã\n" +
+                    "/proximos — próximos compromissos"
             ).asList();
+        }
+
+        if (conversationStateService.isWaitingForName(chatId)) {
+            return startHandler.handleNameInput(chatId, text);
+        }
+
+        if (conversationStateService.isWaitingForGoogleChoice(chatId)) {
+            return startHandler.handleGoogleChoiceInput(chatId, text);
         }
 
         if (conversationStateService.hasActiveConversation(chatId)) {
             return novoHandler.handleConversationStep(chatId, text);
         }
 
-        return BotResponse.text("Nao entendi. Use /start para ver os comandos disponiveis.").asList();
+        return BotResponse.text("Não entendi. Use /start para começar.").asList();
     }
 
     private String extractCommand(String text) {
