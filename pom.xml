@@ -23,6 +23,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <telegrambots.version>6.9.7.1</telegrambots.version>
+        <!-- Verifique a última versão em: https://central.sonatype.com/artifact/dev.langchain4j/langchain4j-open-ai-spring-boot-starter -->
+        <langchain4j.version>0.36.0</langchain4j.version>
     </properties>
 
     <dependencies>
@@ -91,6 +93,18 @@
             <groupId>com.google.auth</groupId>
             <artifactId>google-auth-library-oauth2-http</artifactId>
             <version>1.23.0</version>
+        </dependency>
+
+        <!-- ===== LangChain4j / OpenAI ===== -->
+        <!--
+            Starter que auto-configura ChatLanguageModel via application.yml.
+            Para trocar de provedor (Claude, Ollama, etc.) substitua este artefato
+            e ajuste AiConfig.java — nenhuma outra classe precisa mudar.
+        -->
+        <dependency>
+            <groupId>dev.langchain4j</groupId>
+            <artifactId>langchain4j-open-ai-spring-boot-starter</artifactId>
+            <version>${langchain4j.version}</version>
         </dependency>
 
         <!-- ===== Utilitários ===== -->

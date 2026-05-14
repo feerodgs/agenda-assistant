@@ -1,6 +1,11 @@
 package dev.feliperodrigue.botagendamento.telegram;
 
+import dev.feliperodrigue.botagendamento.ai.AiInterpretation;
+import dev.feliperodrigue.botagendamento.ai.AiInterpreterService;
+import dev.feliperodrigue.botagendamento.ai.UserContext;
 import dev.feliperodrigue.botagendamento.conversation.ConversationStateService;
+import dev.feliperodrigue.botagendamento.domain.UserProfile;
+import dev.feliperodrigue.botagendamento.repository.UserProfileRepository;
 import dev.feliperodrigue.botagendamento.telegram.handler.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +24,9 @@ public class CommandRouter {
     private final StartHandler startHandler;
     private final NovoHandler novoHandler;
     private final ConversationStateService conversationStateService;
+    private final AiInterpreterService aiInterpreterService;
+    private final AiFallbackHandler aiFallbackHandler;
+    private final UserProfileRepository userProfileRepository;
 
     public CommandRouter(
             StartHandler startHandler,
@@ -27,11 +35,17 @@ public class CommandRouter {
             HojeHandler hojeHandler,
             AmanhaHandler amanhaHandler,
             ProximosHandler proximosHandler,
-            ConversationStateService conversationStateService) {
+            ConversationStateService conversationStateService,
+            AiInterpreterService aiInterpreterService,
+            AiFallbackHandler aiFallbackHandler,
+            UserProfileRepository userProfileRepository) {
 
         this.startHandler = startHandler;
         this.novoHandler = novoHandler;
         this.conversationStateService = conversationStateService;
+        this.aiInterpreterService = aiInterpreterService;
+        this.aiFallbackHandler = aiFallbackHandler;
+        this.userProfileRepository = userProfileRepository;
         this.handlers = Map.of(
                 "/start", startHandler,
                 "/vincular", vincularHandler,
@@ -78,7 +92,20 @@ public class CommandRouter {
             return novoHandler.handleConversationStep(chatId, text);
         }
 
-        return BotResponse.text("Não entendi. Use /start para começar.").asList();
+        // Mensagem livre → interpreta com IA e encaminha para o handler de intent
+        return routeWithAi(chatId, text);
+    }
+
+    private List<BotResponse> routeWithAi(long chatId, String text) {
+        UserProfile profile = userProfileRepository.findById(chatId).orElse(null);
+        String nome = profile != null ? profile.getDisplayName() : "usuário";
+        boolean usaGoogle = profile != null && profile.isUseGoogleCalendar();
+
+        UserContext context = UserContext.of(nome, usaGoogle);
+        AiInterpretation interpretation = aiInterpreterService.interpret(text, context);
+
+        log.debug("[Router] IA — chatId={} intent={}", chatId, interpretation.intent());
+        return aiFallbackHandler.handle(chatId, interpretation);
     }
 
     private String extractCommand(String text) {

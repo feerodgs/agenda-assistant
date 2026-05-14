@@ -47,6 +47,14 @@ google:
     client-secret: ${GOOGLE_CLIENT_SECRET:seu-client-secret}
     redirect-uri: ${GOOGLE_REDIRECT_URI:http://localhost:8080/oauth/google/callback}
 
+# ─── OpenAI / Camada de IA ────────────────────────────────────
+# Defina OPENAI_API_KEY como variável de ambiente.
+# Para trocar de modelo (ex.: gpt-4o), altere model-name aqui.
+openai:
+  api-key: ${OPENAI_API_KEY:}
+  model-name: gpt-4o-mini
+  max-tokens: 400
+
 # ─── Logging ──────────────────────────────────────────────────
 logging:
   level:
